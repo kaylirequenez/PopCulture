@@ -1,4 +1,4 @@
-let state;
+// let state;
 let player;
 let ship;
 let aliens = [];
@@ -6,9 +6,8 @@ let lasers = [];
 let won = false;
 let round = 1;
 let incrRound = false;
-
-function preload()
-{
+console.log("fame");
+function preload() {
   alien1 = loadImage('data/Alien1.png');
   alien2 = loadImage('data/Alien2.png');
   coin = loadImage('data/Coin.png');
@@ -21,36 +20,32 @@ function preload()
   cupPlastic = loadImage('data/cupPlastic.png');
   cupMetal = loadImage('data/cupMetal.png');
   beforeSnapping = loadImage('data/BeforeSnapping.png');
-  afterSnapping = loadImage('data/AfterSnapping.png'); 
+  afterSnapping = loadImage('data/AfterSnapping.png');
 }
 
-function setup() 
-{
+function setup() {
   state = 'start';
   createCanvas(windowWidth - 20, windowHeight);
   player = new Player(coin, tree, person1, person2, electricCar, gasCar, cupPlastic, cupMetal, beforeSnapping, afterSnapping);
-  
+
   imageMode(CENTER);
-  
-  let startX = (width - 500)/6;
+
+  let startX = (width - 500) / 6;
   let startY = 200;
-  for(let i = 0; i < 6; i++)
-  {
-    aliens[i] = new Alien(310 + i * startX, startY, alien1, alien2, 5); 
+  for (let i = 0; i < 6; i++) {
+    aliens[i] = new Alien(310 + i * startX, startY, alien1, alien2, 5);
   }
   startY = 100;
   let offset = 0;
-  for(let j = 6; j < 12; j++)
-  {
+  for (let j = 6; j < 12; j++) {
     aliens[j] = new Alien(310 + offset * startX, startY, alien1, alien2, 10);
     offset++;
   }
-  
-  ship = new Ship(); 
+
+  ship = new Ship();
 }
 
-function draw() 
-{
+function draw() {
   frameRate(40);
   background(51);
   textAlign(LEFT, TOP);
@@ -58,19 +53,18 @@ function draw()
   stroke(255);
   strokeWeight(2);
   fill(255);
-  text('Round: '+ round, width - 138, 25);
-  if(state == 'start')
-  {
+  text('Round: ' + round, width - 138, 25);
+  if (state == 'start') {
     player.button.hide();
     stroke(251, 255, 0);
     strokeWeight(10);
     fill(0, 255, 0);
     textSize(100);
     textAlign(CENTER, CENTER);
-    text('Space Invaders', width/2, height/2);
+    text('Space Invaders', width / 2, height / 2);
     strokeWeight(2);
     textSize(50);
-    text("Click spacebar to play", width / 2, height / 2 + height/4);
+    text("Click spacebar to play", width / 2, height / 2 + height / 4);
     textAlign(LEFT, TOP);
     textSize(20);
     stroke(255);
@@ -82,9 +76,8 @@ function draw()
     text("the climate change aliens. Plant more trees to get more oxygen", 10, 80);
     text("coins every 30 seconds. The aliens get faster after every round.", 10, 105);
   }
-  else if(state == 'playing')
-  {
-    image(landscape, width/2, height - 350, 1100, 700);
+  else if (state == 'playing') {
+    image(landscape, width / 2, height - 350, 1100, 700);
     player.showImages();
     stroke(255, 0, 0);
     line(windowWidth - width, height - 285, width, height - 285);
@@ -92,149 +85,121 @@ function draw()
     ship.move();
     player.showTrees();
     player.showButtons();
-  
-    player.button.mouseClicked(function()
-    {
+
+    player.button.mouseClicked(function () {
       player.setClicked(true);
     });
-    
-    player.resume.mouseClicked(function()
-    {
+
+    player.resume.mouseClicked(function () {
       player.setClicked(false);
     });
-    
+
     let edge = false;
-    
-    for(let i = 0; i < aliens.length; i++)
-    {
+
+    for (let i = 0; i < aliens.length; i++) {
       aliens[i].show();
       aliens[i].move();
-      if(aliens[i].x > width - 25 || aliens[i].x < 25)
-      {
+      if (aliens[i].x > width - 25 || aliens[i].x < 25) {
         edge = true;
       }
-      if(aliens[i].y + aliens[i].h >= height - 285)
-      {
+      if (aliens[i].y + aliens[i].h >= height - 285) {
         state = 'gameOver';
       }
     }
-    if(edge)
-    {
-      for(let j = 0; j < aliens.length; j++)
-      {
+    if (edge) {
+      for (let j = 0; j < aliens.length; j++) {
         aliens[j].shiftDown();
       }
     }
-    if(player.slow)
-    {
-      for(let j = 0; j < aliens.length; j++)
-      {
+    if (player.slow) {
+      for (let j = 0; j < aliens.length; j++) {
         aliens[j].rowUp(aliens[j].rows);
         aliens[j].slowDown();
       }
       player.setSlow();
     }
-    
-    for(let las = 0; las < lasers.length; las++)
-    {
+
+    for (let las = 0; las < lasers.length; las++) {
       lasers[las].show();
       lasers[las].move();
-      for(let i = 0; i < aliens.length; i++)
-      {
-        if(lasers[las].hits(aliens[i]))
-        {
+      for (let i = 0; i < aliens.length; i++) {
+        if (lasers[las].hits(aliens[i])) {
           lasers[las].remove();
-          aliens.splice(i, 1); 
+          aliens.splice(i, 1);
         }
-        else if(lasers[las].y <= 0)
-        {
+        else if (lasers[las].y <= 0) {
           lasers[las].remove();
         }
       }
     }
-    
-    for(let k = lasers.length - 1; k >= 0; k--)
-    {
-      if(lasers[k].toDelete)
-      {
+
+    for (let k = lasers.length - 1; k >= 0; k--) {
+      if (lasers[k].toDelete) {
         lasers.splice(k, 1); //removes laser from array
       }
     }
-    
-    if(aliens.length == 0)
-    {
+
+    if (aliens.length == 0) {
       state = 'gameOver';
       won = true;
       incrRound = true;
     }
-    
+
   }
-  else if(state == 'gameOver')
-  {
+  else if (state == 'gameOver') {
     player.button.hide();
     background(0);
     textAlign(CENTER, CENTER);
     stroke(251, 255, 0);
     fill(0, 255, 0);
-    if(!won)
-    {
+    if (!won) {
       strokeWeight(10);
       textSize(100);
       text("GAME OVER", width / 2, height / 2);
       strokeWeight(2);
       textSize(50);
-      text("Click spacebar to play the round again", width / 2, height / 2 + height/4);
+      text("Click spacebar to play the round again", width / 2, height / 2 + height / 4);
     }
-    else
-    {
+    else {
       strokeWeight(10);
       textSize(100);
       text("YOU WIN", width / 2, height / 2);
       strokeWeight(2);
       textSize(50);
-      text("Click spacebar to play the next round", width / 2, height / 2 + height/4);
+      text("Click spacebar to play the next round", width / 2, height / 2 + height / 4);
     }
-    if(incrRound)
-    {
+    if (incrRound) {
       round++;
       incrRound = false;
     }
-    
+
     aliens = [];
-    
+
     lasers = [];
-    
+
     player.reset();
-    
+
     ship.reset();
   }
 }
 
-function keyPressed()
-{
-  if(state == 'start' || state == 'gameOver')
-  {
-    if(key === ' ')
-    {
-      if(state == 'gameOver')
-      {
-        let startX = (width - 500)/6;
+function keyPressed() {
+  if (state == 'start' || state == 'gameOver') {
+    if (key === ' ') {
+      if (state == 'gameOver') {
+        let startX = (width - 500) / 6;
         let startY = 200;
-        for(let i = 0; i < 6; i++)
-        {
-          aliens[i] = new Alien(310 + i * startX, startY, alien1, alien2); 
-          if(won)
-          {
+        for (let i = 0; i < 6; i++) {
+          aliens[i] = new Alien(310 + i * startX, startY, alien1, alien2);
+          if (won) {
             aliens[i].speedUp(round);
           }
         }
         startY = 100;
         let offset = 0;
-        for(let j = 6; j < 12; j++)
-        {
+        for (let j = 6; j < 12; j++) {
           aliens[j] = new Alien(310 + offset * startX, startY, alien1, alien2);
-          if(won)
-          {
+          if (won) {
             aliens[j].speedUp(round);
           }
           offset++;
@@ -245,52 +210,41 @@ function keyPressed()
       state = 'playing';
     }
   }
-  else if(state == 'playing')
-  {
-    if(ship.reload)
-    {
-      if(key === ' ')
-      {
+  else if (state == 'playing') {
+    if (ship.reload) {
+      if (key === ' ') {
         ship.space = true;
         ship.s = second();
       }
     }
-    else
-    {
-      if(key === ' ')
-      {
-        if(!ship.reload)
-        {
+    else {
+      if (key === ' ') {
+        if (!ship.reload) {
           let laser = new Laser(ship.x, ship.y);
           //lasers.push(laser);
           append(lasers, laser);
           ship.bullets--;
-        }  
+        }
       }
     }
-    if(keyCode === RIGHT_ARROW) //ask
+    if (keyCode === RIGHT_ARROW) //ask
     {
       ship.setDir(1);
     }
-    if(keyCode === LEFT_ARROW) //ask
+    if (keyCode === LEFT_ARROW) //ask
     {
       ship.setDir(-1);
     }
   }
 }
 
-function keyReleased()
-{
-  if(state == 'playing')
-  {
-    if(key != ' ')
-    {
+function keyReleased() {
+  if (state == 'playing') {
+    if (key != ' ') {
       ship.setDir(0);
     }
-    else if(key === ' ')
-    {
-      if(ship.reload)
-      {
+    else if (key === ' ') {
+      if (ship.reload) {
         ship.space = false;
       }
     }
